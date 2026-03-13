@@ -37,7 +37,9 @@ def compose_view(base: np.ndarray, mask: np.ndarray) -> np.ndarray:
     red[:, :, 2] = 255
     view = base.copy()
     idx = mask > 0
-    view[idx] = cv2.addWeighted(base[idx], 0.35, red[idx], 0.65, 0)
+    # OpenCV can return None for empty selections; guard first.
+    if np.any(idx):
+        view[idx] = cv2.addWeighted(base[idx], 0.35, red[idx], 0.65, 0)
     return view
 
 
