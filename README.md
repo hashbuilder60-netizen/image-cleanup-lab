@@ -4,6 +4,7 @@ A beginner-friendly Python project for safe image cleanup workflows:
 - Remove unwanted objects from your own photos using masks + inpainting
 - Add your own watermark and remove it later (with saved mask)
 - Detect watermark-like regions for analysis
+- Build smarter masks with GrabCut + interactive painting
 
 ## Safety and Usage Policy
 Use this project only on images you own or have permission to edit.
@@ -22,6 +23,12 @@ Do not use it to remove third-party copyright or ownership marks.
 
 4. `detect_watermark.py`
 - Heuristically detects likely watermark-like regions and outputs preview + mask.
+
+5. `auto_mask.py`
+- Generates an initial object mask from a rectangle using GrabCut.
+
+6. `mask_painter.py`
+- Lets you paint/erase a mask interactively for precise object removal.
 
 ## Setup
 ```powershell
@@ -48,16 +55,7 @@ python src/remove_own_watermark.py \
   --output output/cleaned.jpg
 ```
 
-### 3) Remove any object with custom mask
-Create a white-on-black mask where white = object to remove.
-```powershell
-python src/remove_object.py \
-  --input samples/input.jpg \
-  --mask samples/object_mask.png \
-  --output output/object_removed.jpg
-```
-
-### 4) Detect watermark-like areas
+### 3) Detect watermark-like areas (analysis)
 ```powershell
 python src/detect_watermark.py \
   --input samples/input.jpg \
@@ -65,12 +63,43 @@ python src/detect_watermark.py \
   --mask-output output/detect_mask.png
 ```
 
+## Smarter Object Removal Workflow
+
+### Step A: Auto-generate initial mask
+Use a rectangle around the object.
+```powershell
+python src/auto_mask.py \
+  --input samples/input.jpg \
+  --mask-output output/object_mask_auto.png \
+  --preview-output output/object_mask_preview.jpg \
+  --x 200 --y 120 --w 300 --h 260
+```
+
+### Step B: Refine mask manually (optional but recommended)
+```powershell
+python src/mask_painter.py \
+  --input samples/input.jpg \
+  --mask-output output/object_mask_refined.png
+```
+Mask editor controls:
+- `d` draw (white = remove)
+- `e` erase
+- `[` / `]` change brush size
+- `c` clear
+- `s` save mask
+- `q` quit
+
+### Step C: Remove the object with final mask
+```powershell
+python src/remove_object.py \
+  --input samples/input.jpg \
+  --mask output/object_mask_refined.png \
+  --output output/object_removed.jpg
+```
+
 ## GitHub Push
 ```powershell
-git init
 git add .
-git commit -m "Initial commit: image cleanup lab"
-git branch -M main
-git remote add origin <YOUR_REPO_URL>
-git push -u origin main
+git commit -m "Add smart mask workflow"
+git push
 ```
