@@ -30,9 +30,17 @@ Do not use it to remove third-party copyright or ownership marks.
 6. `mask_painter.py`
 - Lets you paint/erase a mask interactively for precise object removal.
 
+7. `make_sample.py`
+- Generates a ready-to-use sample image at `samples/input.jpg`.
+
 ## Setup
 ```powershell
 pip install -r requirements.txt
+```
+
+## First Run (Create a Sample Input)
+```powershell
+python src/make_sample.py --output samples/input.jpg
 ```
 
 ## Quick Start
@@ -100,6 +108,6 @@ python src/remove_object.py \
 ## GitHub Push
 ```powershell
 git add .
-git commit -m "Add smart mask workflow"
+git commit -m "Update workflows"
 git push
 ```
